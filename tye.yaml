@@ -6,11 +6,10 @@
 #
 name: MultiObs
 services:
-- name: basicwebapp
-  project: src/BasicWebApp/BasicWebApp.csproj
-  bindings:
-    - port: 7000
-        
+
+####################################
+# Pieces for Application 1
+####################################
 - name: basicwebapi1
   project: src/BasicWebApi/BasicWebApi.csproj
   bindings:
@@ -18,6 +17,7 @@ services:
   env:
     - name: AppName
       value: basicwebapi1
+
 - name: frontend1
   project: src/Frontend/Frontend.csproj
   bindings:
@@ -29,6 +29,7 @@ services:
     value: basicwebapi1
   - name: OtlpTargetName
     value: collector1
+
 - name: prometheus1
   image: prom/prometheus:latest
   args: "--config.file=/etc/prometheus.yaml --web.enable-remote-write-receiver --enable-feature=exemplar-storage"
@@ -39,6 +40,7 @@ services:
     - port: 9091
       containerPort: 9090
       protocol: http
+
 - name: collector1
   image: otel/opentelemetry-collector-contrib:latest
   args: --config=/etc/collector-config.yaml
@@ -54,7 +56,10 @@ services:
       containerPort: 4311
       protocol: http
       name: otlp-receiver
-
+  
+####################################
+# Pieces for Application 2
+####################################
 - name: basicwebapi2
   project: src/BasicWebApi/BasicWebApi.csproj
   bindings:
@@ -62,6 +67,7 @@ services:
   env:
     - name: AppName
       value: basicwebapi2
+
 - name: frontend2
   project: src/Frontend/Frontend.csproj
   bindings:
@@ -73,6 +79,7 @@ services:
       value: basicwebapi2
     - name: OtlpTargetName
       value: collector2
+
 - name: prometheus2
   image: prom/prometheus:latest
   args: "--config.file=/etc/prometheus.yaml --web.enable-remote-write-receiver --enable-feature=exemplar-storage"
@@ -83,6 +90,7 @@ services:
     - port: 9092
       containerPort: 9090
       protocol: http
+
 - name: collector2
   image: otel/opentelemetry-collector-contrib:latest
   args: --config=/etc/collector-config.yaml
@@ -99,6 +107,9 @@ services:
       protocol: http
       name: otlp-receiver
       
+####################################
+# Pieces for Federating Prometheus & Grafana
+####################################
 - name: prometheus-federated
   image: prom/prometheus:latest
   args: "--config.file=/etc/prometheus.yaml --enable-feature=exemplar-storage"
