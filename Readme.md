@@ -14,7 +14,7 @@ Additionally there is one "Federating prometheus" and a Grafana instance.
 The Grafana instance automatically gets provisioned the 3 prometheus data sources
 and a simple Overview dashboard.
 
-Currently onle the frontend is pushing metrics to the OpenTelemetry Collector.
+Currently only the frontend is pushing metrics to the OpenTelemetry Collector.
 However this could easily be extended to the backend as well.
 
 The frontend exposes some artificial `business_wellness` using a [BusinessWellnessHostService](./src/Frontend/BusinessWellnessHostService.cs).
@@ -22,7 +22,7 @@ Where a value of 0 means `Healthy`, a value of 10 `Degraded` and a value of 20 `
 
 And the collector applies some `app` label to all metrics, also see [collector 1 config](./config/collector-config-1.yaml) as example.
 
-All the different configurations and dashboards are stored in [config](./config).
+All the different configurations and dashboard are stored in [config](./config).
 
 ## Requirements
 
