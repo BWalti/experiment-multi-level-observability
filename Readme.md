@@ -5,6 +5,9 @@ each with its own Prometheus instance can still get a "combined" view
 in a single prometheus instance which is using Federation
 to fetch metrics from the application prometheus instances.
 
+This looks a bit like this (don't mind that I just took the first icons draw.io suggested me for my queries..):
+![Architecture Overview](./drawio-architecture.drawio.png)
+
 In this demonstration, two "applications" are run, each
 with a "frontend" (named frontend) and a "backend" (named basicwebapi).
 Each application has it's own OpenTelemetry-Collector 
@@ -42,7 +45,9 @@ For details check [tye.yaml](tye.yaml) and the [tye documentation](https://githu
 
 ## Access to different parts of the Demo
 
-The easiest way is to open the [Tye Dashboard](http://127.0.0.1:8000/).
+The easiest way is to open the [Tye Dashboard](http://127.0.0.1:8000/):
+![Tye Dashboard Sample](./tye-dashboard-screenshot.png)
+
 From there you may access e.g. a frontend ([frontend1](http://localhost:7011/) / [frontend2](http://localhost:7012/))
 by clicking on the blue binding link in the fourth column.
 Similarly most other containers can be reached that way 
