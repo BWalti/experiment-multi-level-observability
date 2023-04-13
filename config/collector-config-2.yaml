@@ -1,0 +1,25 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4312
+
+exporters:
+  prometheusremotewrite:
+    endpoint: http://prometheus2:9090/api/v1/write
+  
+  prometheus:
+    endpoint: 0.0.0.0:8762
+    # namespace: ltg
+    const_labels:
+      app: app2
+    send_timestamps: true
+    metric_expiration: 10m
+    resource_to_telemetry_conversion:
+      enabled: true
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheus]

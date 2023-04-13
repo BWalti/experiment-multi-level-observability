@@ -1,0 +1,35 @@
+﻿apiVersion: 1
+      
+datasources:
+  - name: p1
+    type: prometheus
+    uid: p1
+    access: proxy
+    orgId: 1
+    url: http://prometheus1:9090
+    basicAuth: false
+    isDefault: false
+    version: 1
+    editable: false
+
+  - name: p2
+    type: prometheus
+    uid: p2
+    access: proxy
+    orgId: 1
+    url: http://prometheus2:9090
+    basicAuth: false
+    isDefault: false
+    version: 1
+    editable: false
+
+  - name: pf
+    type: prometheus
+    uid: pf
+    access: proxy
+    orgId: 1
+    url: http://prometheus-federated:9090
+    basicAuth: false
+    isDefault: false
+    version: 1
+    editable: false

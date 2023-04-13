@@ -1,0 +1,133 @@
+# tye application configuration file
+# read all about it at https://github.com/dotnet/tye
+#
+# when you've given us a try, we'd love to know what you think:
+#    https://aka.ms/AA7q20u
+#
+name: MultiObs
+services:
+- name: basicwebapp
+  project: src/BasicWebApp/BasicWebApp.csproj
+  bindings:
+    - port: 7000
+        
+- name: basicwebapi1
+  project: src/BasicWebApi/BasicWebApi.csproj
+  bindings:
+    - port: 7001
+  env:
+    - name: AppName
+      value: basicwebapi1
+- name: frontend1
+  project: src/Frontend/Frontend.csproj
+  bindings:
+    - port: 7011
+  env:
+  - name: ServiceName
+    value: App1
+  - name: TargetBackendName
+    value: basicwebapi1
+  - name: OtlpTargetName
+    value: collector1
+- name: prometheus1
+  image: prom/prometheus:latest
+  args: "--config.file=/etc/prometheus.yaml --web.enable-remote-write-receiver --enable-feature=exemplar-storage"
+  volumes:
+    - source: config/prometheus-1.yaml
+      target: /etc/prometheus.yaml
+  bindings:
+    - port: 9091
+      containerPort: 9090
+      protocol: http
+- name: collector1
+  image: otel/opentelemetry-collector-contrib:latest
+  args: --config=/etc/collector-config.yaml
+  volumes:
+    - source: config/collector-config-1.yaml
+      target: /etc/collector-config.yaml
+  bindings:
+    - port: 8761
+      containerPort: 8761
+      protocol: http
+      name: metrics-export
+    - port: 4311
+      containerPort: 4311
+      protocol: http
+      name: otlp-receiver
+
+- name: basicwebapi2
+  project: src/BasicWebApi/BasicWebApi.csproj
+  bindings:
+    - port: 7002
+  env:
+    - name: AppName
+      value: basicwebapi2
+- name: frontend2
+  project: src/Frontend/Frontend.csproj
+  bindings:
+    - port: 7012
+  env:
+    - name: ServiceName
+      value: App2
+    - name: TargetBackendName
+      value: basicwebapi2
+    - name: OtlpTargetName
+      value: collector2
+- name: prometheus2
+  image: prom/prometheus:latest
+  args: "--config.file=/etc/prometheus.yaml --web.enable-remote-write-receiver --enable-feature=exemplar-storage"
+  volumes:
+    - source: config/prometheus-2.yaml
+      target: /etc/prometheus.yaml
+  bindings:
+    - port: 9092
+      containerPort: 9090
+      protocol: http
+- name: collector2
+  image: otel/opentelemetry-collector-contrib:latest
+  args: --config=/etc/collector-config.yaml
+  volumes:
+    - source: config/collector-config-2.yaml
+      target: /etc/collector-config.yaml
+  bindings:
+    - port: 8762
+      containerPort: 8762
+      protocol: http
+      name: metrics-export
+    - port: 4312
+      containerPort: 4312
+      protocol: http
+      name: otlp-receiver
+      
+- name: prometheus-federated
+  image: prom/prometheus:latest
+  args: "--config.file=/etc/prometheus.yaml --enable-feature=exemplar-storage"
+  volumes:
+    - source: config/prometheus-federated.yaml
+      target: /etc/prometheus.yaml
+  bindings:
+    - port: 9095
+      containerPort: 9090
+      protocol: http
+
+- name: grafana
+  image: grafana/grafana:latest
+  volumes:
+    - source: config/grafana-datasources.yaml
+      target: /etc/grafana/provisioning/datasources/datasources.yaml
+    - source: config/grafana-dashboard.json
+      target: /var/lib/grafana/dashboards/grafana-dashboard.json
+    - source: config/grafana-dashboards.yaml
+      target: /etc/grafana/provisioning/dashboards/default.yaml
+
+  bindings:
+    - port: 3000
+      containerPort: 3000
+      protocol: http
+  env:
+    - name: GF_AUTH_ANONYMOUS_ENABLED
+      value: 'true'
+    - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+      value: 'Admin'
+    - name: GF_AUTH_DISABLE_LOGIN_FORM
+      value: 'true'

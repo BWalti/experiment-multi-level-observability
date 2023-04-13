@@ -1,0 +1,13 @@
+﻿apiVersion: 1
+
+providers:
+  - name: Default # A uniquely identifiable name for the provider
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: true
+      # Default path for Windows: C:/Program Files/GrafanaLabs/grafana/public/dashboards
+      # Default path for Linux is: /var/lib/grafana/dashboards
