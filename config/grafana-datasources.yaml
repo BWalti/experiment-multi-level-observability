@@ -33,3 +33,51 @@ datasources:
     isDefault: false
     version: 1
     editable: false
+
+  - name: Tempo
+    type: tempo
+    uid: tempo
+    access: proxy
+    orgId: 1
+    url: http://tempo:3200
+    basicAuth: false
+    isDefault: true
+    version: 1
+    editable: false
+    apiVersion: 1
+    jsonData:
+      tracesToLogs:
+        datasourceUid: loki
+        tags: ['service.instance.id', 'service.name'] # default: 'job', 'instance', 'pod', 'namespace'
+        mappedTags: [{ key: 'service.name', value: 'service_name' }, { key: 'service.instance.id', value: 'service_instance' }]
+        mapTagNamesEnabled: true
+        spanStartTimeShift: '-1m'
+        spanEndTimeShift: '1m'
+        filterByTraceID: true
+        filterBySpanID: false
+      tracesToMetrics:
+        datasourceUid: pf
+      serviceMap:
+        datasourceUid: pf
+      nodeGraph:
+        enabled: true
+      lokiSearch:
+        datasourceUid: loki
+
+  - name: Loki
+    type: loki
+    uid: loki
+    access: proxy
+    orgId: 1
+    url: http://loki:3100
+    basicAuth: false
+    isDefault: false
+    version: 1
+    editable: false
+    jsonData:
+      maxLines: 1000
+      derivedFields:
+        - datasourceUid: tempo
+          matcherRegex: '"traceid":\s?"(\w+)"'
+          name: TraceID
+          url: '$${__value.raw}'

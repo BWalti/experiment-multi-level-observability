@@ -1,16 +1,7 @@
-using System.Reflection;
+using Common.Observability;
 using Frontend;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var resourceBuilder = ResourceBuilder
-    .CreateDefault()
-    .AddService(
-        builder.Environment.ApplicationName,
-        serviceVersion: Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown",
-        serviceInstanceId: Environment.MachineName);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -20,26 +11,7 @@ builder.Services.AddHttpClient<WeatherClient>(client => {
     client.BaseAddress = backendUri;
 });
 
-builder.Services.AddOpenTelemetry()
-    .WithMetrics(b => b
-        .SetResourceBuilder(resourceBuilder)
-        .AddMeter("Frontend.BusinessWellness")
-        .AddAspNetCoreInstrumentation()
-        .AddHttpClientInstrumentation()
-        .AddRuntimeInstrumentation()
-        .AddPrometheusExporter()
-        .AddOtlpExporter(c =>
-        {
-            var otlpTargetName = builder.Configuration["OtlpTargetName"] ?? string.Empty;
-            var otlpTargetUri = builder.Configuration.GetServiceUri(otlpTargetName, "otlp-receiver");
-            c.Endpoint = otlpTargetUri;
-
-            c.BatchExportProcessorOptions.ScheduledDelayMilliseconds = 1000;
-            c.TimeoutMilliseconds = 1000;
-        })
-    );
-
-builder.Services.AddHostedService<BusinessWellnessHostService>();
+builder.AddObservability();
 
 var app = builder.Build();
 
@@ -67,5 +39,4 @@ app.MapGet("/env", () =>
 });
 
 app.UseOpenTelemetryPrometheusScrapingEndpoint();
-
 app.Run();

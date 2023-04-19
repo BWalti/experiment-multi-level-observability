@@ -7,12 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Marten" Version="5.11.0" />
+    <PackageReference Include="Marten.AspNetCore" Version="5.11.0" />
+    <PackageReference Include="Microsoft.Tye.Extensions.Configuration" Version="0.4.0-alpha.20371.1" />
+    <PackageReference Include="Npgsql.OpenTelemetry" Version="6.0.9" />
     <PackageReference Include="OpenTelemetry.Api" Version="1.5.0-alpha.2" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.5.0-alpha.2" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs" Version="1.5.0-alpha.2" />
+    <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.5.0-alpha.1" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.5.0-alpha.2" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.14" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.14" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.1.0-rc.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Observability\Common.Observability.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,6 +7,19 @@
 name: MultiObs
 services:
 
+- name: postgres
+  image: postgres:alpine
+  env:
+    - name: POSTGRES_DB
+      value: demo
+    - name: POSTGRES_USER
+      value: demo
+    - name: POSTGRES_PASSWORD
+      value: demo
+  bindings:
+    - port: 5432
+      containerPort: 5432
+
 ####################################
 # Pieces for Application 1
 ####################################
@@ -15,20 +28,26 @@ services:
   bindings:
     - port: 7001
   env:
+    - name: ServiceName
+      value: Backend1
     - name: AppName
       value: basicwebapi1
+    - name: ConnectionStrings__Marten
+      value: Host=localhost;Port=5432;Database=demo;Username=demo;Password=demo
+    - name: OtlpTargetName
+      value: collector1
 
 - name: frontend1
   project: src/Frontend/Frontend.csproj
   bindings:
     - port: 7011
   env:
-  - name: ServiceName
-    value: App1
-  - name: TargetBackendName
-    value: basicwebapi1
-  - name: OtlpTargetName
-    value: collector1
+    - name: ServiceName
+      value: Frontend1
+    - name: TargetBackendName
+      value: basicwebapi1
+    - name: OtlpTargetName
+      value: collector1
 
 - name: prometheus1
   image: prom/prometheus:latest
@@ -65,8 +84,14 @@ services:
   bindings:
     - port: 7002
   env:
+    - name: ServiceName
+      value: Backend2
     - name: AppName
       value: basicwebapi2
+    - name: ConnectionStrings__Marten
+      value: Host=localhost;Port=5432;Database=demo;Username=demo;Password=demo
+    - name: OtlpTargetName
+      value: collector2
 
 - name: frontend2
   project: src/Frontend/Frontend.csproj
@@ -74,7 +99,7 @@ services:
     - port: 7012
   env:
     - name: ServiceName
-      value: App2
+      value: Frontend2
     - name: TargetBackendName
       value: basicwebapi2
     - name: OtlpTargetName
@@ -108,8 +133,42 @@ services:
       name: otlp-receiver
       
 ####################################
-# Pieces for Federating Prometheus & Grafana
+# Pieces for Federating Prometheus & Grafana, Observability
 ####################################
+- name: loki
+  image: grafana/loki:latest
+  args: "-config.file=/mnt/config/loki-config.yaml"
+  volumes:
+    - source: config/loki-config.yaml
+      target: /mnt/config/loki-config.yaml
+  bindings:
+    - port: 3100
+      containerPort: 3100
+      protocol: http
+      name: http
+    - port: 9096
+      containerPort: 9096
+      protocol: http
+      name: grpc
+
+- name: tempo
+  image: grafana/tempo:latest
+  args: "-config.file=/etc/tempo.yaml"
+  volumes:
+    - source: config/tempo-config.yaml
+      target: /etc/tempo.yaml
+    - source: config/tempo-overrides.yaml
+      target: /etc/overrides.yaml
+  bindings:
+    - port: 3200
+      containerPort: 3200
+      protocol: http
+      name: api
+    - port: 4317
+      containerPort: 4317
+      protocol: http
+      name: http
+
 - name: prometheus-federated
   image: prom/prometheus:latest
   args: "--config.file=/etc/prometheus.yaml --enable-feature=exemplar-storage"

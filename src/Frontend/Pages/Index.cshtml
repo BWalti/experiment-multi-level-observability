@@ -37,3 +37,11 @@ Weather Forecast:
         </tbody>
     </table>
 }
+
+@if (Model.Issues != null)
+{
+    foreach (var issue in Model.Issues)
+    {
+        <p>@issue.Title (@issue.Id)</p>
+    }
+}

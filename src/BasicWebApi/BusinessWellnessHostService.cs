@@ -4,8 +4,10 @@ namespace Frontend;
 
 public class BusinessWellnessHostService : IHostedService
 {
+    public const string MeterName = "Backend.BusinessWellness";
+
     private readonly ILogger<BusinessWellnessHostService> _logger;
-    private static readonly Meter MyMeter = new("Frontend.BusinessWellness", "1.0");
+    private static readonly Meter MyMeter = new(MeterName, "1.0");
 
     /// <summary>
     /// The following gauge exposes some kind of "Business Wellness" statistics per domain business processes

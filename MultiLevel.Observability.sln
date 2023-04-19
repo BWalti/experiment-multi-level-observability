@@ -5,31 +5,33 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DB5E62F7-4B6A-46A8-8352-4B389AFAAF12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicWebApi", "src\BasicWebApi\BasicWebApi.csproj", "{19A37345-B976-4C90-86E3-374F1FAE3F97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicWebApi", "src\BasicWebApi\BasicWebApi.csproj", "{19A37345-B976-4C90-86E3-374F1FAE3F97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend", "src\Frontend\Frontend.csproj", "{7BEB04E5-1AAF-4C01-B483-BB65EE6B9143}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frontend", "src\Frontend\Frontend.csproj", "{7BEB04E5-1AAF-4C01-B483-BB65EE6B9143}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{42595912-ADDB-4F0D-84A8-6C65CF56D969}"
 	ProjectSection(SolutionItems) = preProject
-		tye.yaml = tye.yaml
 		config\collector-config-1.yaml = config\collector-config-1.yaml
 		config\collector-config-2.yaml = config\collector-config-2.yaml
+		config\grafana-dashboard.json = config\grafana-dashboard.json
+		config\grafana-dashboards.yaml = config\grafana-dashboards.yaml
+		config\grafana-datasources.yaml = config\grafana-datasources.yaml
+		config\loki-config.yaml = config\loki-config.yaml
 		config\prometheus-1.yaml = config\prometheus-1.yaml
 		config\prometheus-2.yaml = config\prometheus-2.yaml
 		config\prometheus-federated.yaml = config\prometheus-federated.yaml
-		config\grafana-datasources.yaml = config\grafana-datasources.yaml
-		config\grafana-dashboard.json = config\grafana-dashboard.json
-		config\grafana-dashboards.yaml = config\grafana-dashboards.yaml
 		Readme.md = Readme.md
+		config\tempo-config.yaml = config\tempo-config.yaml
+		config\tempo-overrides.yaml = config\tempo-overrides.yaml
+		tye.yaml = tye.yaml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Observability", "src\Common.Observability\Common.Observability.csproj", "{CE1AD5A2-C85B-4807-9595-0F4F748CF45E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{19A37345-B976-4C90-86E3-374F1FAE3F97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -40,9 +42,20 @@ Global
 		{7BEB04E5-1AAF-4C01-B483-BB65EE6B9143}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BEB04E5-1AAF-4C01-B483-BB65EE6B9143}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BEB04E5-1AAF-4C01-B483-BB65EE6B9143}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE1AD5A2-C85B-4807-9595-0F4F748CF45E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE1AD5A2-C85B-4807-9595-0F4F748CF45E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE1AD5A2-C85B-4807-9595-0F4F748CF45E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE1AD5A2-C85B-4807-9595-0F4F748CF45E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{19A37345-B976-4C90-86E3-374F1FAE3F97} = {DB5E62F7-4B6A-46A8-8352-4B389AFAAF12}
 		{7BEB04E5-1AAF-4C01-B483-BB65EE6B9143} = {DB5E62F7-4B6A-46A8-8352-4B389AFAAF12}
+		{CE1AD5A2-C85B-4807-9595-0F4F748CF45E} = {DB5E62F7-4B6A-46A8-8352-4B389AFAAF12}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B0FCA6D-E711-4524-9E6A-60DE871A09F1}
 	EndGlobalSection
 EndGlobal
