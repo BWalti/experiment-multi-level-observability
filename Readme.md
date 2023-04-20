@@ -8,22 +8,26 @@ to fetch metrics from the application prometheus instances.
 This looks a bit like this (don't mind that I just took the first icons draw.io suggested me for my queries..):
 ![Architecture Overview](./drawio-architecture.drawio.png)
 
-In this demonstration, two "applications" are run, each
+In this demonstration, two instances of the same "application stack" are run, each
 with a "frontend" (named frontend) and a "backend" (named basicwebapi).
-Each application has it's own OpenTelemetry-Collector 
+Each "application stack" has it's own OpenTelemetry-Collector 
 and Prometheus containers running.
 
-Additionally there is one "Federating prometheus" and a Grafana instance.
-The Grafana instance automatically gets provisioned the 3 prometheus data sources
-and a simple Overview dashboard.
+Additionally there is one of each:
+- "Federating prometheus" instance for Metrics across applications
+- central Grafana instance for Dashboarding everything
+- central Postgres DB (for simplicity and laziness reasons)
+- central Grafana Loki instance (for Logs, also simplicity)
+- central Tempo instance (for Traces - I wouldn't know if we could "stitch together" multiple traces from multiple Tempo instances to be honest..)
 
-Currently only the frontend is pushing metrics to the OpenTelemetry Collector.
-However this could easily be extended to the backend as well.
+The Grafana instance automatically gets provisioned the 3 prometheus data sources, as well as Tempo and Loki data sources and also gets configured so that the Logs might get associated with Traces. Also a simple Overview dashboard gets provisioned automatically as well.
 
-The frontend exposes some artificial `business_wellness` using a [BusinessWellnessHostService](./src/Frontend/BusinessWellnessHostService.cs).
+The frontend as well as the basicWebApi are pushing metrics, traces and Logs to the OpenTelemetry Collector all using OTLP.
+
+The frontend as well as the backend expose some artificial `business_wellness` using a [BusinessWellnessHostService](./src/Frontend/BusinessWellnessHostService.cs) in [both cases](./src/BasicWebApi/BusinessWellnessHostService.cs).
 Where a value of 0 means `Healthy`, a value of 10 `Degraded` and a value of 20 `Unhealthy`.
 
-And the collector applies some `app` label to all metrics, also see [collector 1 config](./config/collector-config-1.yaml) as example.
+The collector applies some `app` label to all metrics, also see [collector 1 config](./config/collector-config-1.yaml) as example.
 
 All the different configurations and dashboard are stored in [config](./config).
 
@@ -39,8 +43,7 @@ To be able to run this demonstration, you need:
 
 In the root of this project, execute: `tye run`
 
-This causes some docker containers to be started, the projects being built 
-and run, etc. Basically the whole orchestration is done with tye.
+This causes some docker containers to be started, the projects being built and run, etc. Basically the whole orchestration is done with tye.
 For details check [tye.yaml](tye.yaml) and the [tye documentation](https://github.com/dotnet/tye/blob/main/docs/README.md).
 
 ## Access to different parts of the Demo
