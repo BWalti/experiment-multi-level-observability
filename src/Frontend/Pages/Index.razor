@@ -76,7 +76,7 @@ Weather Forecast:
         await client.PostIssueAsync(new Issue
         {
             Id = Guid.NewGuid(),
-            Title = "Some title"
+            Title = issueTitle
         });
 
         issueTitle = string.Empty;
