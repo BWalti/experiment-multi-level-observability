@@ -20,6 +20,12 @@ public class BusinessWellnessHostService : IHostedService
                 new(WellnessState.GetRandom(), new KeyValuePair<string, object?>("kind", "api"))
             };
         });
+    
+    public static readonly Counter<int> NumberOfIssuesCreated =
+        MyMeter.CreateCounter<int>("issues_created_total");
+
+    private Task? _backgroundTask;
+    private readonly CancellationTokenSource _cts = new ();
 
     public BusinessWellnessHostService(ILogger<BusinessWellnessHostService> logger)
     {
@@ -29,14 +35,29 @@ public class BusinessWellnessHostService : IHostedService
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Starting Business Wellness Metrics...");
-        
+        _backgroundTask = Task.Run(Runnable);
+
         return Task.CompletedTask;
+    }
+
+    private async Task Runnable()
+    {
+        _logger.LogInformation("Running Business Wellness Metrics...");
+
+        while (!_cts.IsCancellationRequested)
+        {
+            _logger.LogInformation("Updating Business Wellness Metrics...");
+            await Task.Delay(TimeSpan.FromSeconds(10), _cts.Token);
+        }
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Stopping Business Wellness Metrics...");
 
+        _cts.Cancel();
+        _backgroundTask?.Wait(cancellationToken);
+        
         return Task.CompletedTask;
     }
 }

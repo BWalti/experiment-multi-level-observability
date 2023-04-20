@@ -20,11 +20,9 @@ public static class ObservabilityWebApplicationBuilderExtensions
         {
             var otlpTargetName = builder.Configuration["OtlpTargetName"] ?? string.Empty;
             var otlpTargetUri = builder.Configuration.GetServiceUri(otlpTargetName, "otlp-receiver");
-                
             configure.Endpoint = otlpTargetUri;
-            configure.BatchExportProcessorOptions.ScheduledDelayMilliseconds = 1000;
-            configure.TimeoutMilliseconds = 1000;
         }
+            
 
         var serviceName = builder.Configuration["ServiceName"] ?? builder.Environment.ApplicationName;
         var serviceVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";

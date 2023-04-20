@@ -36,6 +36,8 @@ services:
       value: Host=localhost;Port=5432;Database=demo;Username=demo;Password=demo
     - name: OtlpTargetName
       value: collector1
+    - name: OTEL_METRIC_EXPORT_INTERVAL
+      value: '1000'
 
 - name: frontend1
   project: src/Frontend/Frontend.csproj
@@ -48,6 +50,8 @@ services:
       value: basicwebapi1
     - name: OtlpTargetName
       value: collector1
+    - name: OTEL_METRIC_EXPORT_INTERVAL
+      value: '1000'
 
 - name: prometheus1
   image: prom/prometheus:latest
@@ -92,6 +96,8 @@ services:
       value: Host=localhost;Port=5432;Database=demo;Username=demo;Password=demo
     - name: OtlpTargetName
       value: collector2
+    - name: OTEL_METRIC_EXPORT_INTERVAL
+      value: '1000'
 
 - name: frontend2
   project: src/Frontend/Frontend.csproj
@@ -104,6 +110,8 @@ services:
       value: basicwebapi2
     - name: OtlpTargetName
       value: collector2
+    - name: OTEL_METRIC_EXPORT_INTERVAL
+      value: '1000'
 
 - name: prometheus2
   image: prom/prometheus:latest

@@ -41,6 +41,7 @@ public class WeatherClient
 
     public async Task PostIssueAsync(Issue issue)
     {
+        BusinessWellnessHostService.NumberOfIssuesCreated.Add(1);
         var result = await this.client.PostAsJsonAsync("/issue", issue);
         result.EnsureSuccessStatusCode();
     }

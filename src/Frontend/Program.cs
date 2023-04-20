@@ -14,6 +14,7 @@ builder.Services.AddHttpClient<WeatherClient>(client => {
 });
 
 builder.AddObservability(meterProviderBuilder => meterProviderBuilder.AddMeter(BusinessWellnessHostService.MeterName));
+builder.Services.AddHostedService<BusinessWellnessHostService>();
 
 var app = builder.Build();
 
