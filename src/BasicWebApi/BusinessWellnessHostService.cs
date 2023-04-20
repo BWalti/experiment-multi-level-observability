@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.Metrics;
 
-namespace Frontend;
+namespace BasicWebApi;
 
 public class BusinessWellnessHostService : IHostedService
 {

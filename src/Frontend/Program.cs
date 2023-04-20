@@ -5,13 +5,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
 builder.Services.AddHttpClient<WeatherClient>(client => {
     var targetBackendName = builder.Configuration["TargetBackendName"] ?? "BasicWebApi";
     var backendUri = builder.Configuration.GetServiceUri(targetBackendName) ?? new Uri("http://localhost:5027");
     client.BaseAddress = backendUri;
 });
 
-builder.AddObservability();
+builder.AddObservability(meterProviderBuilder => meterProviderBuilder.AddMeter(BusinessWellnessHostService.MeterName));
 
 var app = builder.Build();
 
@@ -27,8 +29,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthorization();
+
+app.MapBlazorHub();
 app.MapRazorPages();
 
 app.MapGet("/env", () =>
@@ -39,4 +42,6 @@ app.MapGet("/env", () =>
 });
 
 app.UseOpenTelemetryPrometheusScrapingEndpoint();
+
+app.MapFallbackToPage("/_Host");
 app.Run();

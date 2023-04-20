@@ -1,6 +1,6 @@
+using BasicWebApi;
 using BasicWebApi.Controllers;
 using Common.Observability;
-using Frontend;
 using Marten;
 using Npgsql;
 using Weasel.Core;

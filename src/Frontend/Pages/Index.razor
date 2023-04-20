@@ -1,0 +1,99 @@
+﻿@page "/"
+@using Common.Observability
+@using System.Diagnostics
+@inject WeatherClient client;
+@inject ILogger<Index> _logger;
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+
+Weather Forecast:
+
+@if (forecasts is not null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+                <th>Source</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                    <td>@forecast.Source</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (issues != null)
+{
+    foreach (var issue in issues)
+    {
+        <p>@issue.Title (@issue.Id)</p>
+    }
+}
+
+<input type="text" @bind="issueTitle"/>
+<input type="text" @bind="trackingId" />
+<button class="btn btn-primary" @onclick="CreateIssue">Create Issue</button>
+
+@code {
+    private string issueTitle = string.Empty;
+    private string trackingId = GenerateTrackingId();
+
+    private static string GenerateTrackingId()
+    {
+        return Guid.NewGuid().ToString().Substring(0,4);
+    }
+
+    private int currentCount = 0;
+
+    private WeatherForecast[]? forecasts { get; set; } = Array.Empty<WeatherForecast>();
+    private Issue[]? issues { get; set; } = Array.Empty<Issue>();
+
+    private async Task CreateIssue()
+    {
+        using var activity = Tracing.Source.StartActivity("CreateIssue", ActivityKind.Client);
+        activity?.SetTag("TrackingId", trackingId);
+
+        await client.PostIssueAsync(new Issue
+        {
+            Id = Guid.NewGuid(),
+            Title = "Some title"
+        });
+
+        issueTitle = string.Empty;
+        trackingId = GenerateTrackingId();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await client.GetWeatherAsync();
+        await GetIssues(client);
+        
+        await base.OnInitializedAsync();
+    }
+
+    public async Task GetIssues(WeatherClient client)
+    {
+        _logger.LogInformation("Getting issues from backend API...");
+        issues = await client.GetIssuesAsync();
+    }
+}

@@ -31,6 +31,24 @@ public class MartenSampleController : ControllerBase
             .Take(10)
             .WriteArray(HttpContext);
     }
+
+    [HttpPost("/issue")]
+    public async Task<ActionResult> Post([FromBody] Issue issue, [FromServices] IDocumentStore store, [FromServices]ILogger<MartenSampleController> logger)
+    {
+        if (!TryValidateModel(issue))
+        {
+            return ValidationProblem("The given Issue does not validate.");
+        }
+
+        logger.LogInformation("Doing some informational logging to show on trace.");
+        logger.LogInformation("Posting Issue with ID: {IssueId}", issue.Id);
+
+        await using var session = store.LightweightSession();
+        session.Store(issue);
+        await session.SaveChangesAsync();
+
+        return Ok();
+    }
 }
 
 public class Issue

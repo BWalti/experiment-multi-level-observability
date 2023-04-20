@@ -60,3 +60,13 @@ So be patient. :)
 The result could look like this:
 
 ![A sample screenshot from the dashboard](./grafana-sample.png)
+
+# Update 20.04.2023
+
+Added a way to "Create an Issue" with a tracking ID attached to that trace, allowing us to search for that TrackingId in Tempo and get to the Traces and Logs that way:
+
+![TrackingTraces](./trackingId-in-traces.png)
+
+and then to get to Logs (the Label Browser query needs to be adapted slightly, just remove the `service_name="FrontentX"` part):
+
+![TrackingLogs](./trackingId-logs.png)

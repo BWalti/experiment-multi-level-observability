@@ -38,4 +38,10 @@ public class WeatherClient
     {
         return await this.client.GetFromJsonAsync<Issue[]>("/issue");
     }
+
+    public async Task PostIssueAsync(Issue issue)
+    {
+        var result = await this.client.PostAsJsonAsync("/issue", issue);
+        result.EnsureSuccessStatusCode();
+    }
 }
